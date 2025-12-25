@@ -235,7 +235,7 @@ def switch_source(source_name: str, override_params: Optional[Dict[str, str]] = 
 
 
 def list_sources() -> None:
-    """列出所有可用源"""
+    """列出所有可用源（从 sources.toml 动态读取）"""
     config = load_sources_config()
     current = get_current_source(config)
     sources = config.get('sources', {})
@@ -249,13 +249,30 @@ def list_sources() -> None:
     for name, source_config in sources.items():
         marker = " (当前)" if name == current else ""
         print(f"  {name}{marker}")
-        print(f"    RUSTUP_DIST_SERVER: {source_config.get('rustup_dist_server', 'N/A')}")
-        print(f"    RUSTUP_UPDATE_ROOT: {source_config.get('rustup_update_root', 'N/A')}")
+        
+        # 动态显示所有配置字段（cargo_config 显示摘要，其他字段完整显示）
+        for key, value in source_config.items():
+            if key == 'cargo_config':
+                # 对于 cargo_config，只显示摘要信息（第一行或前几行）
+                if value:
+                    lines = [line.strip() for line in value.strip().split('\n') if line.strip()]
+                    if lines:
+                        # 显示前两行作为摘要
+                        summary = ' | '.join(lines[:2])
+                        if len(summary) > 60:
+                            summary = summary[:57] + '...'
+                        print(f"    {key}: {summary}")
+                    else:
+                        print(f"    {key}: (空配置)")
+                else:
+                    print(f"    {key}: (未配置)")
+            else:
+                print(f"    {key}: {value}")
         print()
 
 
 def show_current_source() -> None:
-    """显示当前使用的源"""
+    """显示当前使用的源（从 sources.toml 动态读取）"""
     try:
         config = load_sources_config()
         current = get_current_source(config)
@@ -268,8 +285,19 @@ def show_current_source() -> None:
         
         print(f"当前使用的源: {current}")
         print("-" * 60)
-        print(f"RUSTUP_DIST_SERVER: {source_config.get('rustup_dist_server', 'N/A')}")
-        print(f"RUSTUP_UPDATE_ROOT: {source_config.get('rustup_update_root', 'N/A')}")
+        
+        # 动态显示所有配置字段
+        for key, value in source_config.items():
+            if key == 'cargo_config':
+                # 对于 cargo_config，显示完整内容
+                print(f"\n{key}:")
+                if value:
+                    print(value)
+                else:
+                    print("  (未配置)")
+            else:
+                print(f"{key}: {value}")
+        
         print(f"\nCargo 配置文件: {get_cargo_config_path()}")
         
     except Exception as e:

@@ -9,3 +9,9 @@ cargo_config = "[source.crates-io]\nreplace-with = 'rsproxy-sparse'\n[source.rsp
 rustup_dist_server = "https://mirror.xuanwu.openatom.cn"
 rustup_update_root = "https://mirror.xuanwu.openatom.cn/rustup"
 cargo_config = "[source.crates-io]\nreplace-with = 'xuanwu-sparse'\n[source.xuanwu]\nregistry = \"https://mirror.xuanwu.openatom.cn/crates.io-index\"\n[source.xuanwu-sparse]\nregistry = \"sparse+https://mirror.xuanwu.openatom.cn/index/\"\n[registries.xuanwu]\nindex = \"https://mirror.xuanwu.openatom.cn/crates.io-index\"\n[net]\ngit-fetch-with-cli = true\n"
+
+[sources.official]
+rustup_dist_server = "https://static.rust-lang.org"
+rustup_update_root = "https://static.rust-lang.org/rustup"
+cargo_config = "[net]\ngit-fetch-with-cli = true\n"
+description = "官方 Rust 源（crates.io）"

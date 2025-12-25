@@ -1,0 +1,3 @@
+toml>=0.10.2
+questionary>=1.10.0
+
